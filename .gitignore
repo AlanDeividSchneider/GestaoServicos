@@ -1,0 +1,67 @@
+# Ambiente Virtual Python
+venv/
+env/
+ENV/
+.venv/
+.env
+
+# Cache do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Banco de Dados Local SQLite (não versionar dados locais/testes)
+*.db
+*.sqlite
+*.sqlite3
+
+# Compilação e Binários do PyInstaller
+build/
+dist/
+*.spec
+
+# Logs e Arquivos do Sistema
+*.log
+.DS_Store
+Thumbs.db
+
+# Configurações de IDEs e Editores
+.vscode/
+.idea/
+
+# Dependências do Frontend (Node / React)
+node_modules/
+build_react/
+dist_react/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+dist
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
