@@ -1,17 +1,24 @@
-// frontend/src/App.jsx
 import { useState, useEffect } from 'react';
 import { Login } from './components/Login';
+import { Header } from './components/Header';
+import { Home } from './pages/Home';
 
-function App() {
+export function App() {
   const [usuario, setUsuario] = useState(null);
+  const [telaAtual, setTelaAtual] = useState('home');
 
   useEffect(() => {
-    // Verifica se já existe um usuário logado no localStorage ao carregar a página
+    const token = localStorage.getItem('token');
     const usuarioSalvo = localStorage.getItem('usuario');
-    if (usuarioSalvo) {
+    if (token && usuarioSalvo) {
       setUsuario(usuarioSalvo);
     }
   }, []);
+
+  const handleLoginSuccess = (nomeUsuario) => {
+    setUsuario(nomeUsuario);
+    setTelaAtual('home');
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -20,27 +27,21 @@ function App() {
   };
 
   if (!usuario) {
-    return <Login onLoginSuccess={(nomeUsuario) => setUsuario(nomeUsuario)} />;
+    return <Login onLoginSuccess={handleLoginSuccess} />;
   }
 
   return (
-    <div style={{ padding: '40px', fontFamily: 'sans-serif' }}>
-      <h1>Bem-vindo, {usuario}!</h1>
-      <p>Você está autenticado e com acesso total ao sistema.</p>
-      
-      <button 
-        onClick={handleLogout}
-        style={{
-          padding: '10px 15px',
-          backgroundColor: '#dc3545',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}
-      >
-        Sair
-      </button>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f1f5f9' }}>
+      <Header 
+        usuario={usuario} 
+        onLogout={handleLogout} 
+        telaAtual={telaAtual} 
+        setTelaAtual={setTelaAtual} 
+      />
+
+      {telaAtual === 'home' && <Home setTelaAtual={setTelaAtual} />}
+      {telaAtual === 'cadastros' && <div style={{ padding: '2rem' }}><h2>Tela de Cadastros em construção...</h2></div>}
+      {telaAtual === 'dashboards' && <div style={{ padding: '2rem' }}><h2>Tela de Dashboards em construção...</h2></div>}
     </div>
   );
 }

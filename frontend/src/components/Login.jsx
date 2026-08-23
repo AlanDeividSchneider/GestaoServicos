@@ -1,139 +1,103 @@
-// frontend/src/components/Login.jsx
 import { useState } from 'react';
 import api from '../services/api';
+import styles from './Login.module.css';
 
 export function Login({ onLoginSuccess }) {
-  const [login, setLogin] = useState('');
-  const [senha, setSenha] = useState('');
-  const [erro, setErro] = useState('');
-  const [carregando, setCarregando] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const MIN_USER_LENGTH = 3;
+  const MIN_PASS_LENGTH = 6;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErro('');
-    setCarregando(true);
+    setError('');
+
+    if (username.length < MIN_USER_LENGTH) {
+      setError(`O usuário deve ter pelo menos ${MIN_USER_LENGTH} caracteres.`);
+      return;
+    }
+
+    if (password.length < MIN_PASS_LENGTH) {
+      setError(`A senha deve ter pelo menos ${MIN_PASS_LENGTH} caracteres.`);
+      return;
+    }
+
+    setLoading(true);
 
     try {
-      const response = await api.post('/auth/login', { login, senha });
-      
-      // Salva o Token e o Login do usuário no navegador
+      const response = await api.post('/auth/login', {
+        login: username,
+        senha: password,
+      });
+
       localStorage.setItem('token', response.data.access_token);
-      localStorage.setItem('usuario', response.data.login);
+      localStorage.setItem('usuario', username);
 
       if (onLoginSuccess) {
-        onLoginSuccess(response.data.login);
+        onLoginSuccess(username);
       }
     } catch (err) {
-      if (err.response && err.response.data.detail) {
-        setErro(err.response.data.detail);
+      if (err.response && err.response.data && err.response.data.detail) {
+        const detail = err.response.data.detail;
+        setError(typeof detail === 'string' ? detail : 'Dados inválidos.');
       } else {
-        setErro('Erro ao conectar com o servidor.');
+        setError('Usuário ou senha incorretos.');
       }
     } finally {
-      setCarregando(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h2 style={styles.titulo}>Acesso ao Sistema</h2>
-        
-        {erro && <div style={styles.alertaErro}>{erro}</div>}
+    <div className={styles.container}>
+      <div className={styles.card}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Servify</h1>
+          <p className={styles.subtitle}>Gestão de Serviços Prestados</p>
+        </div>
 
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <div style={styles.campo}>
-            <label style={styles.label}>Login</label>
+        {error && (
+          <div className={styles.errorBox}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Usuário</label>
             <input
               type="text"
-              value={login}
-              onChange={(e) => setLogin(e.target.value)}
-              required
-              style={styles.input}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               placeholder="Digite seu usuário"
+              required
+              className={styles.input}
             />
           </div>
 
-          <div style={styles.campo}>
-            <label style={styles.label}>Senha</label>
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Senha</label>
             <input
               type="password"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
               required
-              style={styles.input}
-              placeholder="Digite sua senha"
+              className={styles.input}
             />
           </div>
 
-          <button type="submit" disabled={carregando} style={styles.botao}>
-            {carregando ? 'Entrando...' : 'Entrar'}
+          <button
+            type="submit"
+            disabled={loading}
+            className={styles.button}
+          >
+            {loading ? 'Entrando...' : 'Entrar no Sistema'}
           </button>
         </form>
       </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    backgroundColor: '#f4f6f8',
-    fontFamily: 'sans-serif'
-  },
-  card: {
-    width: '100%',
-    maxWidth: '380px',
-    padding: '30px',
-    borderRadius: '8px',
-    backgroundColor: '#ffffff',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-  },
-  titulo: {
-    textAlign: 'center',
-    marginBottom: '20px',
-    color: '#333'
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '15px'
-  },
-  campo: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '5px'
-  },
-  label: {
-    fontSize: '14px',
-    color: '#555'
-  },
-  input: {
-    padding: '10px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-    fontSize: '14px'
-  },
-  botao: {
-    padding: '12px',
-    borderRadius: '4px',
-    border: 'none',
-    backgroundColor: '#007bff',
-    color: '#fff',
-    fontSize: '16px',
-    cursor: 'pointer',
-    marginTop: '10px'
-  },
-  alertaErro: {
-    backgroundColor: '#f8d7da',
-    color: '#721c24',
-    padding: '10px',
-    borderRadius: '4px',
-    marginBottom: '15px',
-    textAlign: 'center',
-    fontSize: '14px'
-  }
-};
