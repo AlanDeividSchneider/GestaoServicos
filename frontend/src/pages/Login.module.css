@@ -1,4 +1,3 @@
-/* frontend/src/components/Login.module.css */
 .container {
   display: flex;
   justify-content: center;
@@ -12,7 +11,7 @@
 .card {
   background-color: var(--color-surface);
   padding: 2.5rem 2rem;
-  border-radius: var(--radius-xl); /* Usando a variável de borda */
+  border-radius: var(--radius-xl); 
   box-shadow: var(--shadow-floating);
   width: 100%;
   max-width: 380px;

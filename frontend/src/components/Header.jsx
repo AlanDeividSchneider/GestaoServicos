@@ -1,6 +1,21 @@
+import { useState } from 'react';
 import styles from './Header.module.css';
 
 export function Header({ usuario, onLogout, telaAtual, setTelaAtual }) {
+  const [dropdownAberto, setDropdownAberto] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownAberto((prev) => !prev);
+  };
+
+  const handleNavegacao = (novaTela) => {
+    setTelaAtual(novaTela);
+    setDropdownAberto(false);
+  };
+
+  const telasDeCadastro = ['clientes', 'tipos-servico', 'horas-adicionais', 'servicos-prestados'];
+  const isCadastroAtivo = telasDeCadastro.includes(telaAtual);
+
   return (
     <header className={styles.header}>
       <div className={styles.brand}>
@@ -8,21 +23,56 @@ export function Header({ usuario, onLogout, telaAtual, setTelaAtual }) {
       </div>
 
       <nav className={styles.nav}>
-        <button 
+        <button
           className={`${styles.navLink} ${telaAtual === 'home' ? styles.active : ''}`}
-          onClick={() => setTelaAtual('home')}
+          onClick={() => handleNavegacao('home')}
         >
           Início
         </button>
-        <button 
-          className={`${styles.navLink} ${telaAtual === 'cadastros' ? styles.active : ''}`}
-          onClick={() => setTelaAtual('cadastros')}
-        >
-          Cadastros
-        </button>
-        <button 
+
+        {/* Menu Dropdown de Cadastros */}
+        <div className={styles.dropdownContainer}>
+          <button
+            className={`${styles.navLink} ${styles.dropdownTrigger} ${isCadastroAtivo ? styles.active : ''}`}
+            onClick={toggleDropdown}
+          >
+            Cadastros
+            <span className={`${styles.arrow} ${dropdownAberto ? styles.arrowOpen : ''}`}>▼</span>
+          </button>
+
+          {dropdownAberto && (
+            <div className={styles.dropdownMenu}>
+              <button
+                className={`${styles.dropdownItem} ${telaAtual === 'clientes' ? styles.dropdownItemActive : ''}`}
+                onClick={() => handleNavegacao('clientes')}
+              >
+                Clientes
+              </button>
+              <button
+                className={`${styles.dropdownItem} ${telaAtual === 'tipos-servico' ? styles.dropdownItemActive : ''}`}
+                onClick={() => handleNavegacao('tipos-servico')}
+              >
+                Tipos de Serviço
+              </button>
+              <button
+                className={`${styles.dropdownItem} ${telaAtual === 'horas-adicionais' ? styles.dropdownItemActive : ''}`}
+                onClick={() => handleNavegacao('horas-adicionais')}
+              >
+                Horas Adicionais
+              </button>
+              <button
+                className={`${styles.dropdownItem} ${telaAtual === 'servicos-prestados' ? styles.dropdownItemActive : ''}`}
+                onClick={() => handleNavegacao('servicos-prestados')}
+              >
+                Serviços Prestados
+              </button>
+            </div>
+          )}
+        </div>
+
+        <button
           className={`${styles.navLink} ${telaAtual === 'dashboards' ? styles.active : ''}`}
-          onClick={() => setTelaAtual('dashboards')}
+          onClick={() => handleNavegacao('dashboards')}
         >
           Dashboards
         </button>
