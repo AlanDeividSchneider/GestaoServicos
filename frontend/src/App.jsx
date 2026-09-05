@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { Login } from './pages/Login';
 import { Header } from './components/Header';
 import { Home } from './pages/Home';
+import { Clientes } from './pages/Clientes';
+import { TiposServico } from './pages/TiposServico';
+import { HorasAdicionais } from './pages/HorasAdicionais';
 
 export function App() {
   const [usuario, setUsuario] = useState(null);
@@ -40,7 +43,10 @@ export function App() {
       />
 
       {telaAtual === 'home' && <Home setTelaAtual={setTelaAtual} />}
-      {telaAtual === 'cadastros' && <div style={{ padding: '2rem' }}><h2>Tela de Cadastros em construção...</h2></div>}
+      {telaAtual === 'clientes' && <Clientes setTelaAtual={setTelaAtual} />}
+      {telaAtual === 'tipos-servico' && <TiposServico setTelaAtual={setTelaAtual} />}
+      {telaAtual === 'horas-adicionais' && <HorasAdicionais setTelaAtual={setTelaAtual} />}
+      {telaAtual === 'servicos-prestados' && <div style={{ padding: '2rem' }}><h2>Tela em construção...</h2></div>}
       {telaAtual === 'dashboards' && <div style={{ padding: '2rem' }}><h2>Tela de Dashboards em construção...</h2></div>}
     </div>
   );
